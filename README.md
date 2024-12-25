@@ -20,4 +20,8 @@ Minecraft-Revamped is a Minecraft clone (that I am remaking because my last one 
 - C++ compiler (MSVC recommended)
 - glfw and assimp libraries (will grow)
 
-##Demo
+## Demo
+
+
+https://github.com/user-attachments/assets/46066f68-9023-4729-ba3c-871107b8b0e7
+
