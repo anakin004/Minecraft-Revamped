@@ -387,25 +387,25 @@ void Chunk::MakeChunkData(int chunkX, int chunkY, int chunkZ, int chunkSize, uve
 
 				int numWaterBlocks = noiseY - WATER_LEVEL;
 
-// 				water
-// 								if (y + baseY < WATER_LEVEL && y + baseY > noiseY)
-// 								{
-// 									chunkData->push_back(Blocks::WATER);
-// 								}
+ 				// water -> temp, just looks cool for now
+				if (y + baseY < WATER_LEVEL && y + baseY > noiseY)
+				{
+					chunkData->push_back(Blocks::WATER);
+				}
 
 				// caves
-				if (y + baseY > noiseY)
+				else if (y + baseY > noiseY)
 					chunkData->push_back(0);
 				else if (noiseCaves > .5f)
 					chunkData->push_back(0);
 
-// 				// ground and underground
-// 				else if (y + baseY == noiseY && noiseY == WATER_LEVEL)
-// 					chunkData->push_back(Blocks::SAND);
-// 
-// 
-// 				else if (y + baseY == noiseY - numWaterBlocks - 1 && noiseY < WATER_LEVEL)
-// 					chunkData->push_back(Blocks::SAND);
+				// ground and underground, sand and water stuff is temp
+				else if (y + baseY == noiseY && noiseY == WATER_LEVEL)
+					chunkData->push_back(Blocks::SAND);
+
+
+				else if (y + baseY == noiseY - numWaterBlocks - 1 && noiseY < WATER_LEVEL)
+					chunkData->push_back(Blocks::SAND);
 
 				else if (y + baseY == noiseY)
 					chunkData->push_back(Blocks::GRASS);
