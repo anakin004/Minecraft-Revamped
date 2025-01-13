@@ -5,7 +5,7 @@
 
 
 
-World::World() : m_ThreadPool(4), m_RenderDistance(3), m_RenderHeight(1), 
+World::World() : m_ThreadPool(4), m_RenderHeight(1), 
 m_ChunksLoading(0), m_NumChunks(0), m_NumChunksRendered(0), m_PrevCamX(0), m_PrevCamY(20), m_PrevCamZ(0)
 {
 }
@@ -44,24 +44,45 @@ void World::Update(glm::vec3 camPos, Shader* shader)
 
 		for (int renderStep = 0; renderStep < m_RenderDistance; renderStep++)
 		{
-			// middle chunks
+
+
+			// middle 
 			for (int y = 0; y <= m_RenderHeight; y++)
 			{
 				m_Queue.push({ camChunkX,              y, camChunkZ + renderStep });
-				m_Queue.push({ camChunkX + renderStep, y, camChunkZ              });
+				m_Queue.push({ camChunkX + renderStep, y, camChunkZ });
 				m_Queue.push({ camChunkX,              y, camChunkZ - renderStep });
-				m_Queue.push({ camChunkX - renderStep, y, camChunkZ              });
+				m_Queue.push({ camChunkX - renderStep, y, camChunkZ });
 
 				if (y > 0)
 				{
 					m_Queue.push({ camChunkX,              -y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ              });
+					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ });
 					m_Queue.push({ camChunkX,              -y, camChunkZ - renderStep });
-					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ              });
+					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ });
 				}
 			}
 
-			// Add edges
+
+			// corners
+			for (int y = 0; y <= m_RenderHeight; y++)
+			{
+				m_Queue.push({ camChunkX + renderStep, y, camChunkZ + renderStep });
+				m_Queue.push({ camChunkX + renderStep, y, camChunkZ - renderStep });
+				m_Queue.push({ camChunkX - renderStep, y, camChunkZ + renderStep });
+				m_Queue.push({ camChunkX - renderStep, y, camChunkZ - renderStep });
+
+				if (y > 0)
+				{
+					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ + renderStep });
+					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ - renderStep });
+					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ + renderStep });
+					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ - renderStep });
+				}
+			}
+
+			
+			// edges
 			for (int edge = 1; edge < renderStep; edge++)
 			{
 				for (int y = 0; y <= m_RenderHeight; y++)
@@ -95,22 +116,7 @@ void World::Update(glm::vec3 camPos, Shader* shader)
 				}
 			}
 
-			// Add corners
-			for (int y = 0; y <= m_RenderHeight; y++)
-			{
-				m_Queue.push({ camChunkX + renderStep, y, camChunkZ + renderStep });
-				m_Queue.push({ camChunkX + renderStep, y, camChunkZ - renderStep });
-				m_Queue.push({ camChunkX - renderStep, y, camChunkZ + renderStep });
-				m_Queue.push({ camChunkX - renderStep, y, camChunkZ - renderStep });
 
-				if (y > 0)
-				{
-					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ - renderStep });
-					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ - renderStep });
-				}
-			}
 		}
 	}
 	else if (m_ChunksLoading == 0 && !m_Queue.empty())

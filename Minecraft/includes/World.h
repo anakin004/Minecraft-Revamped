@@ -39,7 +39,7 @@ private:
 	std::unordered_map<cTuple, Chunk> m_Chunks;
 	std::queue<glm::vec3> m_Queue;
 
-	int m_RenderDistance = 2;
+	int m_RenderDistance = 12;
 	int m_RenderHeight = 1;
 
 	unsigned int m_ChunksLoading;
