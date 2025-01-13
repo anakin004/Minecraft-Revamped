@@ -174,10 +174,9 @@ void World::Update(glm::vec3 camPos, Shader* shader)
 	}
 }
 
-std::vector<unsigned int> World::GetChunkData(int chunkX, int chunkY, int chunkZ)
+std::vector<unsigned int>& World::GetChunkData(int chunkX, int chunkY, int chunkZ)
 {
 	cTuple chunkTuple{ chunkX, chunkY, chunkZ };
-	// doesnt make sense right now but might add something based on condition
 	if (m_Chunks.find(chunkTuple) == m_Chunks.end())
 	{
 		return std::vector<unsigned int>{};

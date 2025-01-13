@@ -30,7 +30,6 @@ glm::mat4 Camera::CalcViewMatrix() const
 {
     return glm::lookAt(m_Position, m_Position + m_Orientation, g_Up);
 }
-#include <iostream>
 void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
 {
 
@@ -48,8 +47,34 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
         default:                                                    break;
 
     }
-
+	
+    m_Position.y += GRAVITY * deltaTime; 
     //std::cout << "dt: " << deltaTime << "\n";
+}
+
+// for gravity sim
+void Camera::OnUpdate(float deltaTime)
+{
+	float chunkX = static_cast<float>(std::floor(m_Position.x));
+	float chunkY = static_cast<float>(std::floor(m_Position.y));
+	float chunkZ = static_cast<float>(std::floor(m_Position.z));
+
+	Chunk* curChunk = World::GetChunk(chunkX, chunkY, chunkZ);
+
+	// can be null if just loading into game
+	if(curChunk != nullptr)
+	{
+		// Raycast with direction of movement
+		Ray ray(m_Position);
+		
+		// dir, steps, step size
+		constexpr float stepSize = 0.001f;
+		constexpr uint32_t numSteps = 1;
+
+		Block* groundBlock = ray.cast(-g_Up, numSteps, stepSize);
+		Block* dirBlock = ray.cast(m_MovementDirection, numSteps, stepSize);
+		
+	}
 }
 
 // @param xrot -  x offset/rot from different between cur mouse x and prev mouse x

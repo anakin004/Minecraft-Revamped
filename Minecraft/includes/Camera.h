@@ -32,6 +32,8 @@ public:
 	void DispatchKeyboardEvent(MovementDir direction, float deltaTime);
 	void DispatchMouseMoveEvent(float xrot, float yrot);
 	void DispatchMouseScrollEvent(float scroll);
+	
+	void OnUpdate(float deltaTime);
 
 	// singleton for camera, only one camera for minecraft
 	static Camera& GetCamera() {

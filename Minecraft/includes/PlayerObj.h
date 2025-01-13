@@ -16,6 +16,8 @@ protected:
 
 	glm::vec3 m_Position;
 	glm::vec3 m_Orientation;
+	
+	float m_Rotation;
 
 };
 

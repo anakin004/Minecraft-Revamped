@@ -21,7 +21,7 @@ public:
 	World();
 	~World();
 
-	std::vector<unsigned int> GetChunkData(int chunkX, int chunkY, int chunkZ);
+	std::vector<unsigned int>& GetChunkData(int chunkX, int chunkY, int chunkZ);
 	void Update(glm::vec3 camPos, Shader* shader);
 
 
