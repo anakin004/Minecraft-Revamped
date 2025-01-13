@@ -6,10 +6,9 @@ class AABB {
 public:
 
 	AABB(const glm::vec3& ColliderMinCornerPos)
-		: minX(ColliderMinCornerPos.x), minY(ColliderMinCornerPos.y), minZ(ColliderMinCornerPos.z),
-		  maxX(ColliderMinCornerPos.x + 1.0f), maxY(ColliderMinCornerPos.y + 1.0f), maxZ(ColliderMinCornerPos.z + 1.0f)
-	{
-	}
+	
+	bool collides(glm::vec3& point);
+	bool collides(float x, float y, float z);
 
 private:
 
