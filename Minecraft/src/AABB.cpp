@@ -2,8 +2,8 @@
 
 
 AABB::AABB(const glm::vec3& ColliderMinCornerPos)
-	: minX(ColliderMinCorner.x), minY(ColliderMinCorner.y), minZ(ColliderMinCorner.z),
-	  maxX(ColliderMinCorner.x + 1.0f), maxY(ColliderMinCorner.y + 1.0f), maxZ(ColliderMinCorner.z + 1.0f)
+	: minX(ColliderMinCornerPos.x), minY(ColliderMinCornerPos.y), minZ(ColliderMinCornerPos.z),
+	  maxX(ColliderMinCornerPos.x + 1.0f), maxY(ColliderMinCornerPos.y + 1.0f), maxZ(ColliderMinCornerPos.z + 1.0f)
 {
 }
 
@@ -17,7 +17,7 @@ bool AABB::collides(const glm::vec3& point)
      	{
 		// collides
 		return true;
-	}
+		}
 	
 	// doesnt collide return false 
 	return false;	

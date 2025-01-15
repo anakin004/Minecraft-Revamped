@@ -77,6 +77,7 @@ void Minecraft::Run()
 		main_shader->SetUniformMat4f("projection", camera.GetProjMat());
 
 		world.Update(camera.GetPos(), main_shader);
+		camera.OnUpdate(appAttribs.GetDeltaTime());
 
 
 		glfwPollEvents();

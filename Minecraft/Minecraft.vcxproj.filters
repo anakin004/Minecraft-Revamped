@@ -111,6 +111,9 @@
     <ClCompile Include="src\PlayerObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AABB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\shader.glsl">
@@ -196,6 +199,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="includes\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

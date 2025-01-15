@@ -141,10 +141,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AABB.cpp" />
     <ClCompile Include="src\CallBack.cpp" />
     <ClCompile Include="src\EBO.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -183,6 +184,7 @@
     <Image Include="Resources\textures\block_map.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="includes\CallBack.h" />
     <ClInclude Include="includes\Block.h" />
     <ClInclude Include="includes\Blocks.h" />

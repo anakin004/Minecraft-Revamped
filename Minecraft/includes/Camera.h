@@ -67,6 +67,7 @@ private:
 	unsigned int m_Height;
 
 	float m_Speed;
+	float m_Velocity;
 	float m_Sensitivity;
 	float m_Zoom;
 

@@ -1,7 +1,7 @@
 #include "Camera.h"
 
-
-const float GRAVITY = -9.81f                  * 2.7; // amplifying gravity
+                    //amplifying gravity * 2
+const float GRAVITY = -9.81f * 2;
 const float TERMINAL_VELOCITY = -50.0f;
 
 //general up direction for projection stuff 
@@ -19,7 +19,8 @@ Camera::Camera(glm::vec3 position, int width, int height, float fov, float nearP
     m_Yaw(-90.f),
     m_Pitch(0.f),
     m_Zoom(75.0f),
-    m_Speed(5.0f),
+	m_Speed(5.0f),
+	m_Velocity(5.0f),
     m_Sensitivity(0.5f)
 {                                       // can do fov or zoom for this
     m_ProjectionMat = glm::perspective(glm::radians(m_Zoom), float(m_Width) / float(m_Height), nearPlane, farPlane);
@@ -40,7 +41,7 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
         case BACK:         m_Position += -m_Orientation * velocity; break;
         case LEFT:         m_Position +=       -m_Right * velocity; break;
         case RIGHT:        m_Position +=        m_Right * velocity; break;
-        case UP:           m_Position +=           g_Up * velocity; break;
+        case UP:           m_Position += g_Up * velocity; m_Velocity = 5.0f; break;
         case DOWN:         m_Position +=          -g_Up * velocity; break;
         case NONE:                                                  break;
         
@@ -48,7 +49,6 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
 
     }
 	
-    m_Position.y += GRAVITY * deltaTime; 
     //std::cout << "dt: " << deltaTime << "\n";
 }
 
@@ -59,6 +59,12 @@ void Camera::OnUpdate(float deltaTime)
 	float chunkY = static_cast<float>(std::floor(m_Position.y));
 	float chunkZ = static_cast<float>(std::floor(m_Position.z));
 
+    m_Velocity += GRAVITY * deltaTime;
+
+    if (m_Velocity < TERMINAL_VELOCITY) m_Velocity = TERMINAL_VELOCITY;
+
+    m_Position.y += m_Velocity * deltaTime;
+    /*
 	Chunk* curChunk = World::GetChunk(chunkX, chunkY, chunkZ);
 
 	// can be null if just loading into game
@@ -75,6 +81,7 @@ void Camera::OnUpdate(float deltaTime)
 		Block* dirBlock = ray.cast(m_MovementDirection, numSteps, stepSize);
 		
 	}
+    */
 }
 
 // @param xrot -  x offset/rot from different between cur mouse x and prev mouse x
@@ -96,7 +103,7 @@ void Camera::DispatchMouseMoveEvent(float xrot, float yrot)
     }
        
 
-    std::cout << "Yaw: " << m_Yaw << "\tPitch: " << m_Pitch << "\n";
+   // std::cout << "Yaw: " << m_Yaw << "\tPitch: " << m_Pitch << "\n";
 
 
     updateCameraVectors();

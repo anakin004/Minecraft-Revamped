@@ -179,7 +179,8 @@ std::vector<unsigned int>& World::GetChunkData(int chunkX, int chunkY, int chunk
 	cTuple chunkTuple{ chunkX, chunkY, chunkZ };
 	if (m_Chunks.find(chunkTuple) == m_Chunks.end())
 	{
-		return std::vector<unsigned int>{};
+		static std::vector<unsigned int> emptyVector;
+		return emptyVector;
 	}
 	else
 	{
