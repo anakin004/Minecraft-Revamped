@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+#include <iostream>
                     //amplifying gravity * 2
 const float GRAVITY = -9.81f * 2;
 const float TERMINAL_VELOCITY = -50.0f;
@@ -49,7 +49,7 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
 
     }
 	
-    //std::cout << "dt: " << deltaTime << "\n";
+    std::cout << "dt: " << deltaTime << "\n";
 }
 
 // for gravity sim

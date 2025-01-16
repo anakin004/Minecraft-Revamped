@@ -3,6 +3,7 @@
 
 #include<glm/glm.hpp>
 #include "Model.h"
+#include "AABB.h"
 
 class PlayerObj{
 
@@ -16,7 +17,10 @@ protected:
 
 	glm::vec3 m_Position;
 	glm::vec3 m_Orientation;
-	
+
+	// might remove since bounding box is based off of player width and height	
+	AABB collider;
+
 	float m_Rotation;
 
 };

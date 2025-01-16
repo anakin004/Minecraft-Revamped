@@ -5,11 +5,11 @@
 class AABB {
 public:
 
-	AABB(const glm::vec3& ColliderMinCornerPos);
+	AABB(const glm::vec3& ColliderMinCornerPos, float width, float height);
 	
 	bool collides(const glm::vec3& point);
 	bool collides(float x, float y, float z);
-
+	bool collides(const AABB& collider);
 private:
 
 	// positions for the box collider

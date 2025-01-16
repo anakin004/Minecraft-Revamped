@@ -1,9 +1,9 @@
 #include "AABB.h"
 
 
-AABB::AABB(const glm::vec3& ColliderMinCornerPos)
+AABB::AABB(const glm::vec3& ColliderMinCornerPos, float width, float height)
 	: minX(ColliderMinCornerPos.x), minY(ColliderMinCornerPos.y), minZ(ColliderMinCornerPos.z),
-	  maxX(ColliderMinCornerPos.x + 1.0f), maxY(ColliderMinCornerPos.y + 1.0f), maxZ(ColliderMinCornerPos.z + 1.0f)
+	  maxX(ColliderMinCornerPos.x + width), maxY(ColliderMinCornerPos.y + height), maxZ(ColliderMinCornerPos.z + width)
 {
 }
 
@@ -27,4 +27,9 @@ bool AABB::collides(const glm::vec3& point)
 bool AABB::collides(float x, float y, float z)
 {
 	return collides(glm::vec3(x,y,z));
+}
+
+bool AABB::collides(const AABB& collider)
+{
+
 }
