@@ -29,7 +29,16 @@ bool AABB::collides(float x, float y, float z)
 	return collides(glm::vec3(x,y,z));
 }
 
+
+// assumes aabb's dont rotate .. this is fine for this clone since I will not be dealing with
+// swimming ( yet ... we will see )
 bool AABB::collides(const AABB& collider)
 {
+	// Check for overlap on all three axes
+	if (maxX < collider.minX || minX > collider.maxX) return false;
+	if (maxY < collider.minY || minY > collider.maxY) return false;
+	if (maxZ < collider.minZ || minZ > collider.maxZ) return false;
 
+	// If none of the above conditions are true, the boxes are colliding
+	return true;
 }

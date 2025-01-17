@@ -157,6 +157,7 @@
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\PlayerObj.cpp" />
+    <ClCompile Include="src\Ray.cpp" />
     <ClCompile Include="src\Render.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image_imp.cpp" />
@@ -184,7 +185,7 @@
     <Image Include="Resources\textures\block_map.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
+    <ClInclude Include="includes\AABB.h" />
     <ClInclude Include="includes\CallBack.h" />
     <ClInclude Include="includes\Block.h" />
     <ClInclude Include="includes\Blocks.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="includes\network.h" />
     <ClInclude Include="includes\AppAttribs.h" />
     <ClInclude Include="includes\Object.h" />
+    <ClInclude Include="includes\Ray.h" />
     <ClInclude Include="includes\World.h" />
     <ClInclude Include="includes\PlayerObj.h" />
     <ClInclude Include="includes\Render.h" />

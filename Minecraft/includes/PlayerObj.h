@@ -19,7 +19,7 @@ protected:
 	glm::vec3 m_Orientation;
 
 	// might remove since bounding box is based off of player width and height	
-	AABB collider;
+	AABB m_Collider;
 
 	float m_Rotation;
 

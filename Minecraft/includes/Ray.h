@@ -1,4 +1,5 @@
 #pragma once
+
 #include <glm/glm.hpp>
 
 
@@ -12,7 +13,7 @@ class Ray
 		// unsure of return type
 		// may return block or boolean
 
-		bool Cast(glm::vec3& direction, int numSteps, float stepSize, float maxDist);
+		bool Cast(const glm::vec3& direction, float stepSize, float maxDist);
 		
 
 	private:
