@@ -8,12 +8,12 @@
 struct ColliderResult
 {
 	glm::vec3 normal;
-	glm::vec3 blockPosition;
+	glm::vec3 contactPoint;
 	float overlapY;
 	float overlapXZ;
 
-	ColliderResult(const glm::vec3& normal, const glm::vec3 blockPos, float overlapY, float overlapXZ)
-		: normal(normal), blockPosition(blockPos), overlapY(overlapY), overlapXZ(overlapXZ)
+	ColliderResult(const glm::vec3& normal, const glm::vec3 contact, float overlapY, float overlapXZ)
+		: normal(normal), contactPoint(contact), overlapY(overlapY), overlapXZ(overlapXZ)
 	{
 	}
 };

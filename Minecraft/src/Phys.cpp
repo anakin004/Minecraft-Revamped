@@ -1,4 +1,5 @@
 #include "Phys.h"
+#include "util.h"
 
 std::vector<glm::vec3> BroadPhase(const glm::vec3& minPos, const glm::vec3& maxPos)
 {
@@ -56,6 +57,9 @@ std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, gl
 {
     std::vector<ColliderResult> collisions;
 
+    constexpr float radius = PLAYER_WIDTH / 2.f;
+    constexpr float height = PLAYER_HEIGHT;
+
     for (const glm::vec3& block : blocks)
     {
         // block coords start at bottom left
@@ -65,25 +69,35 @@ std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, gl
             std::max(block.z, std::min(playerPosition.z, block.z + 1.0f)),
         };
 
-        float dx = closestPoint.x - playerPosition.x;                   // 1.8f is height of player, divide by 2 to get middle
-        float dy = closestPoint.y - (playerPosition.y - /* work around for now */ 1.8f / 2.f);
+
+
+        float dx = closestPoint.x - playerPosition.x;                
+        float dy = closestPoint.y - playerPosition.y - PLAYER_HEIGHT/2.f;
         float dz = closestPoint.z - playerPosition.z;
+        float r_sq = dx * dx + dz * dz;
 
-
+        
+        
 
         bool collision = playerCollider.collides(closestPoint.x, closestPoint.y, closestPoint.z);
 
         if (collision)
         {
             
-            float overlapY = 1.8f/2 - std::abs(dy);
-            glm::vec3 normal{ 0.f, (dy > 0) - (dy < 0), 0.f };
-            
-            // overlap xz 0 for now, just checking y 
-            collisions.emplace_back(normal, block, overlapY, 0.0f);
+            float overlapY = height / 2.f - dy;
+            float overlapXZ = std::sqrt(r_sq) - radius;
+            glm::vec3 yNorm{ 0.f, (dy < -1.0f) - (dy > -1.0f), 0.f };
+            glm::vec3 xzNorm(0.0f);
+            if( dx != 0.0f && dz != 0.0f)
+                xzNorm = glm::normalize(glm::vec3{ -dx, 0.0f, -dz });
+
+            // Temporarily combining xz and y collisions for testing.
+            collisions.emplace_back(yNorm, closestPoint, overlapY, 0.0f);
+            collisions.emplace_back(xzNorm, closestPoint, 0.0f, overlapXZ);
+
         }
     }
 
-    return collisions;;
+    return collisions;
 
 }

@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Phys.h"
 
+
+
                     //amplifying gravity * 2
 const float GRAVITY = -9.81f * 2;
 const float TERMINAL_VELOCITY = -50.0f;
@@ -38,11 +40,11 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
 
     float velocity = m_Speed * deltaTime;
 
-    glm::vec3 forward = -glm::cross(m_Right, g_Up);
+    glm::vec3 backward = glm::cross(m_Right, g_Up);
 
     switch (dir) {
-        case FORWARD:      m_Position +=  forward * velocity; break;
-        case BACK:         m_Position += -m_Orientation * velocity; break;
+        case FORWARD:      m_Position += -backward * velocity; break;
+        case BACK:         m_Position +=  backward * velocity; break;
         case LEFT:         m_Position +=       -m_Right * velocity; break;
         case RIGHT:        m_Position +=        m_Right * velocity; break;
         case UP:           m_Position += g_Up * velocity; m_Velocity = 5.0f; break;
@@ -63,23 +65,41 @@ void Camera::OnUpdate(float deltaTime)
 	float chunkY = static_cast<float>(std::floor(m_Position.y));
 	float chunkZ = static_cast<float>(std::floor(m_Position.z));
 
-    m_Velocity += GRAVITY * deltaTime;
-
-    if (m_Velocity < TERMINAL_VELOCITY) m_Velocity = TERMINAL_VELOCITY;
-
-    m_Position.y += m_Velocity * deltaTime;
-
+    
+   m_Velocity += GRAVITY * deltaTime;
+   if (m_Velocity < TERMINAL_VELOCITY) m_Velocity = TERMINAL_VELOCITY;
+   m_Position.y += m_Velocity * deltaTime;
+   
     // blocks will now be all the blocks , x,y,z , "near" the player with some dx, dy, and dz
-    std::vector<glm::vec3> blocks = BroadPhase(glm::floor(m_Position - 2.0f), glm::floor(m_Position + 2.0f));
-    AABB box({ m_Position.x - 0.6, m_Position.y - 1.8f, m_Position.z}, 0.6f, 1.8f);
+
+    std::vector<glm::vec3> blocks = BroadPhase(glm::floor(m_Position - 2.0f), glm::ceil(m_Position + 4.0f));
+
+    glm::vec3 minBoxPos{ m_Position.x - PLAYER_WIDTH / 2.f, m_Position.y - PLAYER_HEIGHT, m_Position.z - PLAYER_WIDTH / 2.0f };
+    AABB box(minBoxPos, PLAYER_WIDTH, PLAYER_HEIGHT);
     std::vector<ColliderResult> hitBlocks = NarrowPhase(blocks, m_Position, box);
-    for (auto &it  : hitBlocks)
-    {
-        m_Position.y += it.overlapY;
-        m_Velocity = 0.0f;
+
+    glm::vec3 totalCorrectionY(0.0f);
+    glm::vec3 totalCorrectionXZ(0.0f);
+
+    for (const auto& it : hitBlocks) {
+        if (!box.collides(it.contactPoint))
+            continue;
+
+        if (it.overlapY != 0.0f) {
+            totalCorrectionY = it.normal * it.overlapY;
+            m_Velocity = 0.0f;
+        }
+
+        if (it.overlapXZ != 0.0f)
+            totalCorrectionXZ = it.normal * it.overlapXZ;
+
+
     }
 
-    //std::cout << hitBlocks.size() << "\n";
+    // Apply total corrections to position
+    m_Position += totalCorrectionY * deltaTime;
+    //m_Position += totalCorrectionXZ * deltaTime;
+
 
 }
 

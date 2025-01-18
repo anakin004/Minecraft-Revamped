@@ -10,9 +10,11 @@ public:
 	bool collides(const glm::vec3& point) const;
 	bool collides(float x, float y, float z) const;
 	bool collides(const AABB& collider) const;
+
 private:
 
 	// positions for the box collider
 	float minX, minY, minZ;
 	float maxX, maxY, maxZ;
+
 };

@@ -53,5 +53,7 @@ constexpr int CHUNK_HEIGHT = 256;
 constexpr int WIDTH = 1280;
 constexpr int HEIGHT = 720;
 
+constexpr float PLAYER_WIDTH = 0.6f;
+constexpr float PLAYER_HEIGHT = 1.8f;
 
 #endif 

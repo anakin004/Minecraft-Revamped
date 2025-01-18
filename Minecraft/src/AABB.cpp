@@ -1,6 +1,7 @@
 #include "AABB.h"
 
 
+// this kind of aabb can be used with radius to make it act like a cylindrical collider
 AABB::AABB(const glm::vec3& ColliderMinCornerPos, float width, float height)
 	: minX(ColliderMinCornerPos.x), minY(ColliderMinCornerPos.y), minZ(ColliderMinCornerPos.z),
 	  maxX(ColliderMinCornerPos.x + width), maxY(ColliderMinCornerPos.y + height), maxZ(ColliderMinCornerPos.z + width)
