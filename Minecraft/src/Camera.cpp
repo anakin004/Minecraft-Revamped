@@ -38,8 +38,10 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
 
     float velocity = m_Speed * deltaTime;
 
+    glm::vec3 forward = -glm::cross(m_Right, g_Up);
+
     switch (dir) {
-        case FORWARD:      m_Position +=  m_Orientation * velocity; break;
+        case FORWARD:      m_Position +=  forward * velocity; break;
         case BACK:         m_Position += -m_Orientation * velocity; break;
         case LEFT:         m_Position +=       -m_Right * velocity; break;
         case RIGHT:        m_Position +=        m_Right * velocity; break;
@@ -70,28 +72,15 @@ void Camera::OnUpdate(float deltaTime)
     // blocks will now be all the blocks , x,y,z , "near" the player with some dx, dy, and dz
     std::vector<glm::vec3> blocks = BroadPhase(glm::floor(m_Position - 2.0f), glm::floor(m_Position + 2.0f));
     AABB box({ m_Position.x - 0.6, m_Position.y - 1.8f, m_Position.z}, 0.6f, 1.8f);
-    std::vector<glm::vec3> hitBlocks = NarrowPhase(blocks, m_Position, box);
+    std::vector<ColliderResult> hitBlocks = NarrowPhase(blocks, m_Position, box);
+    for (auto &it  : hitBlocks)
+    {
+        m_Position.y += it.overlapY;
+        m_Velocity = 0.0f;
+    }
 
-    std::cout << hitBlocks.size() << "\n";
+    //std::cout << hitBlocks.size() << "\n";
 
-    /*
-	Chunk* curChunk = World::GetChunk(chunkX, chunkY, chunkZ);
-
-	// can be null if just loading into game
-	if(curChunk != nullptr)
-	{
-		// Raycast with direction of movement
-		Ray ray(m_Position);
-		
-		// dir, steps, step size
-		constexpr float stepSize = 0.001f;
-		constexpr uint32_t numSteps = 1;
-
-		Block* groundBlock = ray.cast(-g_Up, numSteps, stepSize);
-		Block* dirBlock = ray.cast(m_MovementDirection, numSteps, stepSize);
-		
-	}
-    */
 }
 
 // @param xrot -  x offset/rot from different between cur mouse x and prev mouse x

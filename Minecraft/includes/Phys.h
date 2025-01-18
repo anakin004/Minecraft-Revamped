@@ -5,5 +5,18 @@
 #include "World.h"
 #include "AABB.h"
 
+struct ColliderResult
+{
+	glm::vec3 normal;
+	glm::vec3 blockPosition;
+	float overlapY;
+	float overlapXZ;
+
+	ColliderResult(const glm::vec3& normal, const glm::vec3 blockPos, float overlapY, float overlapXZ)
+		: normal(normal), blockPosition(blockPos), overlapY(overlapY), overlapXZ(overlapXZ)
+	{
+	}
+};
+
 std::vector<glm::vec3> BroadPhase(const glm::vec3& minPos, const glm::vec3& maxPos);
-std::vector<glm::vec3> NarrowPhase(const std::vector<glm::vec3>& blocks, glm::vec3& playerPosition, const AABB& playerCollider);
+std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, glm::vec3& playerPosition, const AABB& playerCollider);

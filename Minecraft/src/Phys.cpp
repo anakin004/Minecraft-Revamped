@@ -52,10 +52,10 @@ std::vector<glm::vec3> BroadPhase(const glm::vec3& minPos, const glm::vec3& maxP
 }
 
 
-std::vector<glm::vec3> NarrowPhase(const std::vector<glm::vec3>& blocks, glm::vec3& playerPosition, const AABB& playerCollider)
+std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, glm::vec3& playerPosition, const AABB& playerCollider)
 {
-    std::vector<glm::vec3> collidedBlocks;
-    collidedBlocks.reserve(2);
+    std::vector<ColliderResult> collisions;
+
     for (const glm::vec3& block : blocks)
     {
         // block coords start at bottom left
@@ -69,12 +69,21 @@ std::vector<glm::vec3> NarrowPhase(const std::vector<glm::vec3>& blocks, glm::ve
         float dy = closestPoint.y - (playerPosition.y - /* work around for now */ 1.8f / 2.f);
         float dz = closestPoint.z - playerPosition.z;
 
+
+
         bool collision = playerCollider.collides(closestPoint.x, closestPoint.y, closestPoint.z);
 
         if (collision)
-            collidedBlocks.emplace_back(block);
+        {
+            
+            float overlapY = 1.8f/2 - std::abs(dy);
+            glm::vec3 normal{ 0.f, (dy > 0) - (dy < 0), 0.f };
+            
+            // overlap xz 0 for now, just checking y 
+            collisions.emplace_back(normal, block, overlapY, 0.0f);
+        }
     }
 
-    return collidedBlocks;
+    return collisions;;
 
 }
