@@ -8,7 +8,7 @@ AABB::AABB(const glm::vec3& ColliderMinCornerPos, float width, float height)
 }
 
 
-bool AABB::collides(const glm::vec3& point)
+bool AABB::collides(const glm::vec3& point) const
 {
 	if(point.x >= minX && point.x <= maxX &&
 	   point.y >= minY && point.y <= maxY &&
@@ -24,7 +24,7 @@ bool AABB::collides(const glm::vec3& point)
 
 }
 
-bool AABB::collides(float x, float y, float z)
+bool AABB::collides(float x, float y, float z) const
 {
 	return collides(glm::vec3(x,y,z));
 }
@@ -32,7 +32,7 @@ bool AABB::collides(float x, float y, float z)
 
 // assumes aabb's dont rotate .. this is fine for this clone since I will not be dealing with
 // swimming ( yet ... we will see )
-bool AABB::collides(const AABB& collider)
+bool AABB::collides(const AABB& collider) const
 {
 	// Check for overlap on all three axes
 	if (maxX < collider.minX || minX > collider.maxX) return false;

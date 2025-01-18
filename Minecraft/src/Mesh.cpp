@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+#include <glad/glad.h>
 
 ModelLoader::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures) :
 	vertices(vertices), indices(indices), textures(textures)

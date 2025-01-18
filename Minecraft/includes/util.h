@@ -2,7 +2,6 @@
 #define UTIL_H
 
 
-#include <GLFW/glfw3.h>
 #include "Block.h"
 #include <glm/glm.hpp>
 #include <array>

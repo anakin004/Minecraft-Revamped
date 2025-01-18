@@ -23,8 +23,8 @@ Chunk::Chunk(unsigned int chunkSize, glm::vec3 chunkPos, Thread::ThreadPool& tp)
 	m_Ready = false;
 	m_Generated = false;
 
-	// when we generate chunk we should default it to render, depending on render dist this flag will change, but generally it will be close enough
-	m_Render = true;
+	// when we generate chunk we should default it to not render since it must be generated in chunk first
+	m_Render = false;
  
 
 	tp.enqueueTask(std::bind(&Chunk::GenerateChunk, this));
@@ -59,13 +59,6 @@ void Chunk::GenerateChunk()
 	//uvec northChunk, southChunk, eastChunk, westChunk, upChunk, downChunk;
  
 
-	/*
-	
-	for some reason this is so slow ( calling get chunk data instead of creating surrounding each time )
-	i will need to call get chunk data and fix it as with block placing and destroying we will need to change 
-	chunks, thus neighboring chunks getting created need access to that
-
-	*/
 	
 	
  	uvec northChunk = w.GetChunkData(m_ChunkPos.x, m_ChunkPos.y, m_ChunkPos.z - 1);
@@ -76,19 +69,19 @@ void Chunk::GenerateChunk()
 	uvec downChunk  = w.GetChunkData(m_ChunkPos.x, m_ChunkPos.y + 1, m_ChunkPos.z);
 
 	
-
+	constexpr int chunkDims = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 	      
-	if(northChunk.empty())
+	if(northChunk.size() != chunkDims)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y,		m_ChunkPos.z - 1, CHUNK_SIZE, &northChunk);
-	if(southChunk.empty())
+	if(southChunk.size() != chunkDims)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y,		m_ChunkPos.z + 1, CHUNK_SIZE, &southChunk);
-	if (eastChunk.empty())
+	if (eastChunk.size() != chunkDims)
 	MakeChunkData(m_ChunkPos.x + 1, m_ChunkPos.y,		m_ChunkPos.z,	  CHUNK_SIZE, &eastChunk);
-	if(westChunk.empty())
+	if(westChunk.size() != chunkDims)
 	MakeChunkData(m_ChunkPos.x - 1, m_ChunkPos.y,		m_ChunkPos.z,	  CHUNK_SIZE, &westChunk);
-	if(upChunk.empty())
+	if(upChunk.size() != chunkDims)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y + 1,	m_ChunkPos.z,	  CHUNK_SIZE, &upChunk);
-	if(downChunk.empty())
+	if(downChunk.size() != chunkDims)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y - 1,	m_ChunkPos.z,	  CHUNK_SIZE, &downChunk);
 
 
@@ -333,6 +326,7 @@ void Chunk::OnUpdate()
 
 			glBindVertexArray(0);
 			m_Ready = true;
+			m_Render = true;
 		}
 	}
 }
@@ -394,10 +388,8 @@ void Chunk::MakeChunkData(int chunkX, int chunkY, int chunkZ, int chunkSize, uve
 				}
 
 				// caves
-				else if (y + baseY > noiseY)
-					chunkData->push_back(0);
-				else if (noiseCaves > .5f)
-					chunkData->push_back(0);
+				else if (y + baseY > noiseY || noiseCaves > .5f)
+					chunkData->push_back(Blocks::AIR);
 
 				// ground and underground, sand and water stuff is temp
 				else if (y + baseY == noiseY && noiseY == WATER_LEVEL)

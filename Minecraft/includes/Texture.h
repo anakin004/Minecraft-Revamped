@@ -1,13 +1,9 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#ifndef _GLFW_INCLUDES
-#define _GLFW_INCLUDES
 
-	#include <glad/glad.h>
-	#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
-#endif
 
 
 #include <iostream>

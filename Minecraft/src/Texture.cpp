@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "Debug.h"
 
+#include <glad/glad.h>
 
 std::array<Texture, 4> Texture::m_Textures;
 

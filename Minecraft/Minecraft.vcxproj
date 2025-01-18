@@ -156,6 +156,7 @@
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\Phys.cpp" />
     <ClCompile Include="src\PlayerObj.cpp" />
     <ClCompile Include="src\Ray.cpp" />
     <ClCompile Include="src\Render.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="includes\network.h" />
     <ClInclude Include="includes\AppAttribs.h" />
     <ClInclude Include="includes\Object.h" />
+    <ClInclude Include="includes\Phys.h" />
     <ClInclude Include="includes\Ray.h" />
     <ClInclude Include="includes\World.h" />
     <ClInclude Include="includes\PlayerObj.h" />

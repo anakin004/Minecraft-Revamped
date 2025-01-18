@@ -1,5 +1,7 @@
 #include "Camera.h"
 #include <iostream>
+#include "Phys.h"
+
                     //amplifying gravity * 2
 const float GRAVITY = -9.81f * 2;
 const float TERMINAL_VELOCITY = -50.0f;
@@ -49,7 +51,7 @@ void Camera::DispatchKeyboardEvent(MovementDir dir, float deltaTime)
 
     }
 	
-    std::cout << "dt: " << deltaTime << "\n";
+
 }
 
 // for gravity sim
@@ -64,6 +66,14 @@ void Camera::OnUpdate(float deltaTime)
     if (m_Velocity < TERMINAL_VELOCITY) m_Velocity = TERMINAL_VELOCITY;
 
     m_Position.y += m_Velocity * deltaTime;
+
+    // blocks will now be all the blocks , x,y,z , "near" the player with some dx, dy, and dz
+    std::vector<glm::vec3> blocks = BroadPhase(glm::floor(m_Position - 2.0f), glm::floor(m_Position + 2.0f));
+    AABB box({ m_Position.x - 0.6, m_Position.y - 1.8f, m_Position.z}, 0.6f, 1.8f);
+    std::vector<glm::vec3> hitBlocks = NarrowPhase(blocks, m_Position, box);
+
+    std::cout << hitBlocks.size() << "\n";
+
     /*
 	Chunk* curChunk = World::GetChunk(chunkX, chunkY, chunkZ);
 

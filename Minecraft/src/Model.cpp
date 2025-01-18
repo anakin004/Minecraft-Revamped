@@ -1,6 +1,8 @@
 #include "Model.h"
 #include "Debug.h"
 
+#include <glad/glad.h>
+
 
 namespace ModelLoader {
 

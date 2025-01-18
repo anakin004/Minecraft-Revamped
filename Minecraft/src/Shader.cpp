@@ -2,6 +2,7 @@
 #include <glm/gtc/type_ptr.hpp> // for value_ptr
 
 
+#include <glad/glad.h>
 
 
 std::unordered_map<std::string, Shader*> Shader::m_ShaderLocationCache = {};
