@@ -61,6 +61,7 @@ std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, gl
     constexpr float height = PLAYER_HEIGHT;
     constexpr float dampingFactor = 0.1f;
 
+
     for (const glm::vec3& block : blocks)
     {
         // block coords start at bottom left
@@ -70,30 +71,41 @@ std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, gl
             std::max(block.z, std::min(playerPosition.z, block.z + 1.0f)),
         };
 
+        bool is_above = false;
 
+        float dx = closestPoint.x - playerPosition.x;    
 
-        float dx = closestPoint.x - playerPosition.x;                
-        float dy = closestPoint.y - playerPosition.y - PLAYER_HEIGHT/2.f;
+        float dy = closestPoint.y - playerPosition.y;
+        if (playerPosition.y > block.y + 1.0f)
+        {
+            dy -= PLAYER_HEIGHT / 2.f;
+            is_above = true;
+        }
+
         float dz = closestPoint.z - playerPosition.z;
         float r_sq = dx * dx + dz * dz;
 
         
         
 
-        bool collision = playerCollider.collides(closestPoint.x, closestPoint.y, closestPoint.z);
+        bool collision = playerCollider.collides(closestPoint.x, closestPoint.y , closestPoint.z);
 
         if (collision)
         {
             
             float overlapY = height / 2.f - dy;
-            overlapY *= dampingFactor; // applying damping to prevent continuous bouncing
+
+            if (is_above)
+                overlapY *= dampingFactor; // applying damping to prevent continuous bouncing
+            else
+                overlapY *= 20.0f;
             float overlapXZ = std::sqrt(r_sq) - radius;
             glm::vec3 yNorm{ 0.f, (dy < -1.0f) - (dy > -1.0f), 0.f };
             glm::vec3 xzNorm(0.0f);
             if( dx != 0.0f && dz != 0.0f)
                 xzNorm = glm::normalize(glm::vec3{ -dx, 0.0f, -dz });
 
-            // Temporarily combining xz and y collisions for testing.
+            // temporarily combining xz and y collisions for testing.
             collisions.emplace_back(yNorm, closestPoint, overlapY, 0.0f);
             collisions.emplace_back(xzNorm, closestPoint, 0.0f, overlapXZ);
 
