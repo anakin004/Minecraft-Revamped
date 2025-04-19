@@ -2,6 +2,7 @@
 #include "World.h"
 #include "Blocks.h"
 #include "util.h"
+#include "Debug.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -335,7 +336,7 @@ void Chunk::Render(Shader* shader)
 {
 	if (m_Render && m_Ready)
 	{
-		glBindVertexArray(m_VAO);
+		GlCall(glBindVertexArray(m_VAO));
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, m_WorldPos);

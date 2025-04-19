@@ -32,7 +32,7 @@ namespace Thread {
 		std::queue<Task> m_Tasks;
 		std::mutex m_QueueMutex;
 		std::condition_variable m_Condition;
-		std::atomic<bool> m_StopPool;
+		bool m_StopPool;
 
 	};
 
