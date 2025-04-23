@@ -1,6 +1,7 @@
 #include "CallBack.h"
 #include "Camera.h"
 #include "AppAttribs.h"
+#include "Ray.h"
 
 static AppAttribs &appAttribs = AppAttribs::GetAppAttribs();
 Camera &camera = Camera::GetCamera();
@@ -67,4 +68,16 @@ void CallBackStates::mouse_callback(GLFWwindow* window, double xpos, double ypos
 void CallBackStates::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.DispatchMouseScrollEvent(yoffset);
+}
+
+void CallBackStates::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (appAttribs.GetMenuMode() == false)
+	{
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		{
+			Ray r(camera.GetPos());
+			r.Cast(camera.GetOrientation(), 2.f);
+		}
+	}
 }

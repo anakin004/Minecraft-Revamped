@@ -13,6 +13,7 @@
 
 
 
+
 using uvec = std::vector<unsigned int>;
 
 
@@ -54,7 +55,13 @@ void Chunk::GenerateChunk()
 
 	World &w = World::GetWorld();
 
-	MakeChunkData(m_ChunkPos.x, m_ChunkPos.y, m_ChunkPos.z, CHUNK_SIZE, &m_ChunkData);
+	if (m_ChunkData.size() == 0)
+		MakeChunkData(m_ChunkPos.x, m_ChunkPos.y, m_ChunkPos.z, CHUNK_SIZE, &m_ChunkData);
+	else
+	{
+		std::vector<Vertex>().swap(m_Vertices);
+		std::vector<unsigned int>().swap(m_Indices);
+	}
 
 
 	//uvec northChunk, southChunk, eastChunk, westChunk, upChunk, downChunk;
@@ -67,22 +74,20 @@ void Chunk::GenerateChunk()
  	uvec eastChunk  = w.GetChunkData(m_ChunkPos.x + 1, m_ChunkPos.y, m_ChunkPos.z);
 	uvec westChunk  = w.GetChunkData(m_ChunkPos.x - 1, m_ChunkPos.y, m_ChunkPos.z);
 	uvec upChunk    = w.GetChunkData(m_ChunkPos.x, m_ChunkPos.y + 1, m_ChunkPos.z);
-	uvec downChunk  = w.GetChunkData(m_ChunkPos.x, m_ChunkPos.y + 1, m_ChunkPos.z);
+	uvec downChunk  = w.GetChunkData(m_ChunkPos.x, m_ChunkPos.y - 1, m_ChunkPos.z);
 
-	
-	constexpr int chunkDims = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
-	      
-	if(northChunk.size() != chunkDims)
+		      
+	if(northChunk.size() == 0)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y,		m_ChunkPos.z - 1, CHUNK_SIZE, &northChunk);
-	if(southChunk.size() != chunkDims)
+	if(southChunk.size() == 0)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y,		m_ChunkPos.z + 1, CHUNK_SIZE, &southChunk);
-	if (eastChunk.size() != chunkDims)
+	if (eastChunk.size() == 0)
 	MakeChunkData(m_ChunkPos.x + 1, m_ChunkPos.y,		m_ChunkPos.z,	  CHUNK_SIZE, &eastChunk);
-	if(westChunk.size() != chunkDims)
+	if(westChunk.size() == 0)
 	MakeChunkData(m_ChunkPos.x - 1, m_ChunkPos.y,		m_ChunkPos.z,	  CHUNK_SIZE, &westChunk);
-	if(upChunk.size() != chunkDims)
+	if(upChunk.size() == 0)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y + 1,	m_ChunkPos.z,	  CHUNK_SIZE, &upChunk);
-	if(downChunk.size() != chunkDims)
+	if(downChunk.size() == 0)
 	MakeChunkData(m_ChunkPos.x,		m_ChunkPos.y - 1,	m_ChunkPos.z,	  CHUNK_SIZE, &downChunk);
 
 
@@ -95,8 +100,9 @@ void Chunk::GenerateChunk()
 			for (char y = 0; y < CHUNK_SIZE; y++)
 			{
 				int index = x * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + y;
-				if (m_ChunkData[index] == 0)
+				if (m_ChunkData[index] == Blocks::AIR)
 					continue;
+
 
 				const Block* block = &Blocks::blocks[m_ChunkData[index]];
 
@@ -127,7 +133,7 @@ void Chunk::GenerateChunk()
 						northBlock = m_ChunkData[northIndex];
 					}
 
-					if (northBlock == 0)
+					if (northBlock == Blocks::AIR)
 					{
 						m_Vertices.push_back(Vertex(x + 1, y + 0, z + 0, block->sideMinX, block->sideMinY));
 						m_Vertices.push_back(Vertex(x + 0, y + 0, z + 0, block->sideMaxX, block->sideMinY));
@@ -156,7 +162,7 @@ void Chunk::GenerateChunk()
 						int southIndex = x * CHUNK_SIZE * CHUNK_SIZE + 0 * CHUNK_SIZE + y;
 						southBlock = southChunk[southIndex];
 					}
-					if (southBlock == 0)
+					if (southBlock == Blocks::AIR)
 					{
 						m_Vertices.push_back(Vertex(x + 0, y + 0, z + 1, block->sideMinX, block->sideMinY));
 						m_Vertices.push_back(Vertex(x + 1, y + 0, z + 1, block->sideMaxX, block->sideMinY));
@@ -185,7 +191,7 @@ void Chunk::GenerateChunk()
 						int blockIndex = (CHUNK_SIZE - 1) *CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + y;
 						westBlock = westChunk[blockIndex];
 					}
-					if (westBlock == 0)
+					if (westBlock == Blocks::AIR)
 					{
 						m_Vertices.push_back(Vertex(x + 0, y + 0, z + 0, block->sideMinX, block->sideMinY));
 						m_Vertices.push_back(Vertex(x + 0, y + 0, z + 1, block->sideMaxX, block->sideMinY));
@@ -215,7 +221,7 @@ void Chunk::GenerateChunk()
 						int blockIndex = 0 * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + y;
 						eastBlock = eastChunk[blockIndex];
 					}
-					if (eastBlock == 0)
+					if (eastBlock == Blocks::AIR)
 					{
 						m_Vertices.push_back(Vertex(x + 1, y + 0, z + 1, block->sideMinX, block->sideMinY));
 						m_Vertices.push_back(Vertex(x + 1, y + 0, z + 0, block->sideMaxX, block->sideMinY));
@@ -245,7 +251,7 @@ void Chunk::GenerateChunk()
 						int blockIndex = x * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE + (CHUNK_SIZE - 1);
 						bottomBlock = downChunk[blockIndex];
 					}
-					if (bottomBlock == 0)
+					if (bottomBlock == Blocks::AIR)
 					{
 						m_Vertices.push_back(Vertex(x + 1, y + 0, z + 1, block->bottomMinX, block->bottomMinY));
 						m_Vertices.push_back(Vertex(x + 0, y + 0, z + 1, block->bottomMaxX, block->bottomMinY));
@@ -274,7 +280,7 @@ void Chunk::GenerateChunk()
 						int blockIndex = x * CHUNK_SIZE * CHUNK_SIZE + z * CHUNK_SIZE;
 						topBlock = upChunk[blockIndex];
 					}
-					if (topBlock == 0)
+					if (topBlock == Blocks::AIR)
 					{
 						m_Vertices.push_back(Vertex(x + 0, y + 1, z + 1, block->topMinX, block->topMinY));
 						m_Vertices.push_back(Vertex(x + 1, y + 1, z + 1, block->topMaxX, block->topMinY));
@@ -313,7 +319,9 @@ void Chunk::OnUpdate()
 
 			glGenBuffers(1, &m_VBO);
 			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-			glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glBufferSubData(GL_ARRAY_BUFFER, 0, m_Vertices.size() * sizeof(Vertex), m_Vertices.data());
 
 			glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, posX));
 			glEnableVertexAttribArray(0);
@@ -323,12 +331,38 @@ void Chunk::OnUpdate()
 
 			glGenBuffers(1, &m_EBO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW); 
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_Indices.size() * sizeof(unsigned int), m_Indices.data());
 
 			glBindVertexArray(0);
+
 			m_Ready = true;
 			m_Render = true;
 		}
+
+	}
+
+	if (m_Dirty)
+	{
+
+		GenerateChunk();
+
+		m_Dirty = false;
+
+		m_NumTriangles = m_Indices.size();
+
+		glBindVertexArray(m_VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m_Vertices.size() * sizeof(Vertex), m_Vertices.data());
+
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, m_Indices.size() * sizeof(unsigned int), m_Indices.data());
+
+
+		m_Ready = true;
+		m_Render = true;
 	}
 }
 
@@ -348,6 +382,11 @@ void Chunk::Render(Shader* shader)
 
 }
 
+
+void Chunk::SetBlock(int idx, unsigned int blockType)
+{
+	m_ChunkData.at(idx) = blockType;
+}
 
 
 

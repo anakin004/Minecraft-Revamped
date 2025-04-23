@@ -13,7 +13,7 @@ class Ray
 		// unsure of return type
 		// may return block or boolean
 
-		bool Cast(const glm::vec3& direction, float stepSize, float maxDist);
+		bool Cast(const glm::vec3& direction , float maxDist);
 		
 
 	private:

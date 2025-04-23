@@ -40,14 +40,6 @@ void Minecraft::Run()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	Gui gui(window);
-
-	// i am fine with having these as singletons
-	// they are all meyer singletons so all thread safe for reading, since c++11 i believe
-	// we will only have one world, camera and app, and i primarily did this because of callbackmethods needing static methods
-	// since i wanted to seperate the call back methods in a class
-	// i could set user pointer to point to specific data to use in callbacks
-	// will add that
-
 	World& world = World::GetWorld();
 	Camera& camera = Camera::GetCamera();
 	AppAttribs &appAttribs = AppAttribs::GetAppAttribs();
@@ -135,10 +127,11 @@ bool Minecraft::initGL()
 		glfwSetFramebufferSizeCallback(window, CallBackStates::framebufferSizeCallback);
 		glfwSetCursorPosCallback(window, CallBackStates::mouse_callback);
 		glfwSetScrollCallback(window, CallBackStates::scroll_callback);
+		glfwSetMouseButtonCallback(window, CallBackStates::mouse_button_callback);
 
 		glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
 
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CW);

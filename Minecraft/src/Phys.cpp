@@ -60,6 +60,7 @@ std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, gl
     constexpr float radius = PLAYER_WIDTH / 2.f;
     constexpr float height = PLAYER_HEIGHT;
     constexpr float dampingFactor = 0.1f;
+    constexpr float ampFactor = 20.0f;
 
 
     for (const glm::vec3& block : blocks)
@@ -98,7 +99,8 @@ std::vector<ColliderResult> NarrowPhase(const std::vector<glm::vec3>& blocks, gl
             if (is_above)
                 overlapY *= dampingFactor; // applying damping to prevent continuous bouncing
             else
-                overlapY *= 20.0f;
+                overlapY *= ampFactor;
+
             float overlapXZ = std::sqrt(r_sq) - radius;
             glm::vec3 yNorm{ 0.f, (dy < -1.0f) - (dy > -1.0f), 0.f };
             glm::vec3 xzNorm(0.0f);

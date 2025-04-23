@@ -1,5 +1,6 @@
 #include "Debug.h"
-
+#include "Camera.h"
+Camera& cam = Camera::GetCamera();
 
 void ClearGl()
 {
@@ -60,6 +61,8 @@ void Gui::HandleGui()
 	// Create a named window
 	ImGui::Begin("-~+");
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / m_Io->Framerate, m_Io->Framerate);
+	glm::vec3 pos = cam.GetPos();
+	ImGui::Text("x %.3f\t y %.3f\t z %.3f", pos.x, pos.y, pos.z);
 	ImGui::End();
 
 	// Clear the screen

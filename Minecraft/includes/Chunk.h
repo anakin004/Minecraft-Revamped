@@ -35,16 +35,21 @@ public:
 	inline bool GetReadyStatus() { return m_Ready; }
 	inline glm::vec3& GetPos() { return m_ChunkPos; }
 	inline uvec&  GetData() { return m_ChunkData; }
+	inline void SetDirty(bool dirt) { m_Dirty = dirt; }
 
+
+	void SetBlock(int idx, unsigned int blockType);
 	void MakeChunkData(int x, int y, int z, int chunkSize, std::vector<unsigned int>* chunkData);
 
 
 private:
 
+
 	uvec m_ChunkData;
 	glm::vec3 m_ChunkPos;
 	bool m_Ready;
 	bool m_Render;
+	bool m_Dirty = false;
 	std::atomic<bool> m_Generated;
 
 	GLuint m_VAO, m_VBO, m_EBO;

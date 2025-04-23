@@ -24,6 +24,28 @@ public:
 	std::vector<unsigned int>& GetChunkData(int chunkX, int chunkY, int chunkZ);
 	void Update(glm::vec3 camPos, Shader* shader);
 
+	inline void SetDirtyChunk(int chunkX, int chunkY, int chunkZ) 
+	{
+		cTuple chunkTuple{ chunkX, chunkY, chunkZ };
+		if (m_Chunks.find(chunkTuple) != m_Chunks.end())
+		{
+			m_Chunks[chunkTuple].SetDirty(true);
+		}
+	}
+
+	inline Chunk* GetChunk(int chunkX, int chunkY, int chunkZ)
+	{
+		cTuple chunkTuple{ chunkX, chunkY, chunkZ };
+		if (m_Chunks.find(chunkTuple) != m_Chunks.end())
+		{
+			return &m_Chunks[chunkTuple];
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+	
 
 	static World& GetWorld() {
 		static World w;

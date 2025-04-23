@@ -10,7 +10,7 @@ constexpr uchar spriteSize = 16;
 namespace Blocks
 {
 
-	enum BLOCKS
+	enum BLOCKS : unsigned int
 	{
 		AIR = 0,
 		DIRT, 
