@@ -7,16 +7,31 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-struct ChunkPosition {
+
+using uvec = std::vector<unsigned int>;
+
+
+struct ChunkPosition 
+{
 	int x, y, z;
 
 	// equality operator is required for unordered_map/set
-	bool operator==(const ChunkPosition& other) const {
+	bool operator==(const ChunkPosition& other) const
+	{
 		return x == other.x && y == other.y && z == other.z;
 	}
 };
 
-using uvec = std::vector<unsigned int>;
+
+// i decided to change it from manually checking each chunk to see if they already existed
+// to defining clearly the pair of direction and a pointer to the chunks block data
+struct ChunkOffset
+{
+	glm::vec3 offset;
+	uvec* chunk;
+};
+
+
 
 class Chunk
 {
@@ -36,6 +51,7 @@ public:
 	inline glm::vec3& GetPos() { return m_ChunkPos; }
 	inline uvec&  GetData() { return m_ChunkData; }
 	inline void SetDirty(bool dirt) { m_Dirty = dirt; }
+	inline bool IsDirty() { return m_Dirty; }
 
 
 	void SetBlock(int idx, unsigned int blockType);
@@ -44,6 +60,10 @@ public:
 
 private:
 
+	void RemakeChunk();
+	void Reset();
+
+private:
 
 	uvec m_ChunkData;
 	glm::vec3 m_ChunkPos;

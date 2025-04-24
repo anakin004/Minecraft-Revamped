@@ -189,3 +189,46 @@ std::vector<unsigned int>& World::GetChunkData(int chunkX, int chunkY, int chunk
 }
 
 
+void World::MarkNeighbors(int lx, int ly, int lz, int cx, int cy, int cz)
+{
+	const int max = CHUNK_SIZE - 1;
+
+	auto markChunk = [&]( std::vector<glm::ivec3>& dvecs ) -> void {
+
+		for(glm::ivec3& dvec : dvecs )
+		{
+			Chunk* neighbor = GetChunk(cx + dvec.x, cy + dvec.y, cz + dvec.z);
+
+			if (neighbor)
+			{
+				neighbor->SetDirty(true);
+				neighbor->OnUpdate(); // Update duplicated face in the neighbor
+			}
+		}
+	};
+
+	// takes in local indices for lx, ly, lz
+
+	auto getEdgeDirections = [](int x, int y, int z) -> std::vector<glm::ivec3> {
+		std::vector<glm::ivec3> dirs;
+
+		if (x == 0)                   dirs.push_back({ -1,  0,  0 }); // -X
+		else if (x == CHUNK_SIZE - 1) dirs.push_back({ 1,  0,  0 }); // +X
+
+		if (y == 0)                   dirs.push_back({ 0, -1,  0 }); // -Y
+		else if (y == CHUNK_SIZE - 1) dirs.push_back({ 0,  1,  0 }); // +Y
+
+		if (z == 0)                   dirs.push_back({ 0,  0, -1 }); // -Z
+		else if (z == CHUNK_SIZE - 1) dirs.push_back({ 0,  0,  1 }); // +Z
+
+		return dirs;
+		};
+
+	// Check if the block is on the edge of the chunk
+	std::vector<glm::ivec3> dirs = getEdgeDirections(lx, ly, lz);
+	markChunk(dirs);
+
+
+	
+}
+

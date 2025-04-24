@@ -52,6 +52,8 @@ public:
 		return w;
 	}
 
+	void MarkNeighbors(int lx, int ly, int lz, int cx, int cy, int cz);
+
 
 private:
 
