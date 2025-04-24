@@ -42,81 +42,35 @@ void World::Update(glm::vec3 camPos, Shader* shader)
 		if (m_Chunks.find({ camChunkX, camChunkY, camChunkZ }) == m_Chunks.end())
 			m_Queue.push({ camChunkX, camChunkY, camChunkZ });
 
-		for (int renderStep = 0; renderStep < m_RenderDistance; renderStep++)
+		auto enqueueSymmetric = [&](int x, int y, int z) -> void {
+
+			m_Queue.push({ camChunkX + x,  y, camChunkZ + z });
+
+			// to avoid duplicates
+			if (y != 0)
+				m_Queue.push({ camChunkX + x, -y, camChunkZ + z });
+			};
+
+		// for each render distance 'step', iterate over the shells of a cube in xyz plane
+		// ... where max(|x|, |z|) == step, and enqueue symmetric chunk positions across Y
+		// this replaces manual handling of cardinal directions, corners, and edges I had previously
+
+		for (int step = 0; step < m_RenderDistance; ++step) 
 		{
-
-
-			// middle 
-			for (int y = 0; y <= m_RenderHeight; y++)
+			for (int x = -step; x <= step; ++x) 
 			{
-				m_Queue.push({ camChunkX,              y, camChunkZ + renderStep });
-				m_Queue.push({ camChunkX + renderStep, y, camChunkZ });
-				m_Queue.push({ camChunkX,              y, camChunkZ - renderStep });
-				m_Queue.push({ camChunkX - renderStep, y, camChunkZ });
-
-				if (y > 0)
+				for (int z = -step; z <= step; ++z) 
 				{
-					m_Queue.push({ camChunkX,              -y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ });
-					m_Queue.push({ camChunkX,              -y, camChunkZ - renderStep });
-					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ });
-				}
-			}
-
-
-			// corners
-			for (int y = 0; y <= m_RenderHeight; y++)
-			{
-				m_Queue.push({ camChunkX + renderStep, y, camChunkZ + renderStep });
-				m_Queue.push({ camChunkX + renderStep, y, camChunkZ - renderStep });
-				m_Queue.push({ camChunkX - renderStep, y, camChunkZ + renderStep });
-				m_Queue.push({ camChunkX - renderStep, y, camChunkZ - renderStep });
-
-				if (y > 0)
-				{
-					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX + renderStep, -y, camChunkZ - renderStep });
-					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX - renderStep, -y, camChunkZ - renderStep });
-				}
-			}
-
-			
-			// edges
-			for (int edge = 1; edge < renderStep; edge++)
-			{
-				for (int y = 0; y <= m_RenderHeight; y++)
-				{
-					m_Queue.push({ camChunkX + edge, y, camChunkZ + renderStep });
-					m_Queue.push({ camChunkX - edge, y, camChunkZ + renderStep });
-
-					m_Queue.push({ camChunkX + renderStep, y, camChunkZ + edge });
-					m_Queue.push({ camChunkX + renderStep, y, camChunkZ - edge });
-
-					m_Queue.push({ camChunkX + edge, y, camChunkZ - renderStep });
-					m_Queue.push({ camChunkX - edge, y, camChunkZ - renderStep });
-
-					m_Queue.push({ camChunkX - renderStep, y, camChunkZ + edge });
-					m_Queue.push({ camChunkX - renderStep, y, camChunkZ - edge });
-
-					if (y > 0)
+					// skiping inner cube faces, we only want the shell
+					if (std::max(std::abs(x), std::abs(z)) == step) 
 					{
-						m_Queue.push({ camChunkX + edge, -y, camChunkZ + renderStep });
-						m_Queue.push({ camChunkX - edge, -y, camChunkZ + renderStep });
-
-						m_Queue.push({ camChunkX + renderStep, -y, camChunkZ + edge });
-						m_Queue.push({ camChunkX + renderStep, -y, camChunkZ - edge });
-
-						m_Queue.push({ camChunkX + edge, -y, camChunkZ - renderStep });
-						m_Queue.push({ camChunkX - edge, -y, camChunkZ - renderStep });
-
-						m_Queue.push({ camChunkX - renderStep, -y, camChunkZ + edge });
-						m_Queue.push({ camChunkX - renderStep, -y, camChunkZ - edge });
+						for (int y = 0; y <= m_RenderHeight; ++y)
+						{
+							enqueueSymmetric(x, y, z);
+						}
 					}
 				}
 			}
-
-
 		}
 	}
 	else if (m_ChunksLoading == 0 && !m_Queue.empty())
@@ -129,9 +83,7 @@ void World::Update(glm::vec3 camPos, Shader* shader)
 
 		if (m_Chunks.find(chunkTuple) == m_Chunks.end())
 		{
-			m_Chunks.try_emplace(chunkTuple,
-				CHUNK_SIZE, next, m_ThreadPool
-			);
+			m_Chunks.try_emplace(chunkTuple, CHUNK_SIZE, next, m_ThreadPool);
 		}
 	}
 
@@ -155,9 +107,9 @@ void World::Update(glm::vec3 camPos, Shader* shader)
 
 
 		if (chunkReady && (abs(chunkX - camChunkX) > m_RenderDistance ||
-			abs(chunkY - camChunkY) > m_RenderDistance ||
-			abs(chunkZ - camChunkZ) > m_RenderDistance
-			))
+						   abs(chunkY - camChunkY) > m_RenderDistance ||
+			               abs(chunkZ - camChunkZ) > m_RenderDistance
+						 ))
 		{
 			it->second.SetRender(false);
 			m_NumChunksRendered--;
