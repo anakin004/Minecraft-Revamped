@@ -1,8 +1,8 @@
-# Minecraft-Revamped
+`# Minecraft-Revamped
 
 ## Description
 
-Minecraft-Revamped is a Minecraft clone (that I am remaking because my last one was ... eh ... https://github.com/anakin004/Minecraft-Clone), developed in C++ with focus on performance optimization, multithreading, and real-time rendering.
+Minecraft-Revamped is a Minecraft clone (that I am remaking because my last one was ... eh ... [Previous Clone](https://github.com/ryan-mangeno/Minecraft-Clone), developed in C++ with focus on performance optimization, multithreading, and real-time rendering.
 
 ## Features
 
